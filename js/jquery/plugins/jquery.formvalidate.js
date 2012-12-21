@@ -19,6 +19,50 @@
     }
 
     /**
+     * Validates whether the value of an element is alphanumeric
+     * 
+     * @param {DOMElement} element
+     * @param {DOMElement} form
+     * @returns {boolean}
+     */
+    function isValidAlnum(element, form) {
+        var pattern = /^[a-zA-z0-9]+$/;
+
+        try {
+            if(!pattern.test(element.value)) {
+                showError(element, 'alnum');
+                return false;
+            }
+
+            return true;
+        } catch(Exception) {
+            return false;
+        } 
+    }
+
+    /**
+     * Validates whether the value of an element is alphabetic
+     * 
+     * @param {DOMElement} element
+     * @param {DOMElement} form
+     * @returns {boolean}
+     */
+    function isValidAlpha(element, form) {
+        var pattern = /^[a-zA-Z]+$/;
+
+        try {
+            if(!pattern.test(element.value)) {
+                showError(element, 'alpha');
+                return false;
+            }
+
+            return true;
+        } catch(Exception) {
+            return false;
+        } 
+    }
+
+    /**
      * Validates whether the value of an element is an email
      * 
      * @param {DOMElement} element
@@ -26,10 +70,10 @@
      * @returns {boolean}
      */
     function isValidEmail(element, form) {
-        var emailPattern = /(^[0-9a-zA-Z]+(?:[._][0-9a-zA-Z]+)*)@([0-9a-zA-Z]+(?:[._-][0-9a-zA-Z]+)*\.[0-9a-zA-Z]{2,3})$/;
+        var pattern = /(^[0-9a-zA-Z]+(?:[._][0-9a-zA-Z]+)*)@([0-9a-zA-Z]+(?:[._-][0-9a-zA-Z]+)*\.[0-9a-zA-Z]{2,3})$/;
 
         try {
-            if (!emailPattern.test(element.value)) {
+            if (!pattern.test(element.value)) {
                 showError(element, 'email');
                 return false;
             }
@@ -166,6 +210,23 @@
                     var dataValidations = $(element).attr('data-validation').split(' ');
                     $(dataValidations).each(function(index, validation) {
                         switch (validation) {
+                            case "alnum": {
+                                if ($.inArray("require", dataValidations)
+                                    || "" !== element.value
+                                ) {
+                                    errorFlag = isValidAlnum(element, form);
+                                }
+                                break;
+                            }
+                            case "alpha": {
+                                if ($.inArray("require", dataValidations)
+                                    || "" !== element.value
+                                ) {
+                                    errorFlag = isValidAlpha(element, form);
+                                }
+                                break;
+                            }
+
                             case "email": {
                                 if ($.inArray("require", dataValidations)
                                     || "" !== element.value
