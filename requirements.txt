@@ -1,4 +1,4 @@
-1. The pluggin should work using de submit event of the form which had a a data-validation  attribute and the value determines the type of display (see point 5). 
+1. The pluggin should work using de submit event of the form which had a data-validation  attribute and the value determines the type of display (see point 5). 
 
 Example: 
 
