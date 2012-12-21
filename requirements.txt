@@ -1,11 +1,11 @@
-1. The pluggin should work using de submit event of the form which had a data-validation  attribute and the value determines the type of display (see point 5). 
+1. The pluggin should work using de submit event of the form which had a data-validation attribute and the value determines the type of display (see point 5). 
 
 Example: 
 
 <form data-validation="summary-top"> 
 </form> 
  
-2. The pluggin should work  just adding the data-x-validator and jquery files and adding the data-validation attribute. Javascript configuration will not be required. 
+2. The pluggin should work  just adding the data-x-validator plugin and jquery files and adding the data-validation attribute. Javascript configuration will not be required. 
 
 Example: 
 
@@ -18,15 +18,16 @@ Example:
 
 3. "data-validation" attribute in form's elements can have the following possible values: 
 
-required  
+alnum
+alpha 
+email 
+enum 
 integer  
 number  
-email  
-alpha 
-range  
-enum 
+range
+required
 
-These attribute values can be combined using space separator. 
+These attribute values can be combined using space like separator. 
 
 Example: 
  
