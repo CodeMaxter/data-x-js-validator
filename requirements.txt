@@ -1,0 +1,59 @@
+1. The pluggin should work using de submit event of the form which had a a data-validation  attribute and the value determines the type of display (see point 5). 
+
+Example: 
+
+<form data-validation="summary-top"> 
+</form> 
+ 
+2. The pluggin should work  just adding the data-x-validator and jquery files and adding the data-validation attribute. Javascript configuration will not be required. 
+
+Example: 
+
+<body> 
+<form data-validation="summary-top"> 
+</form> 
+<script src="jquery.js"><script> 
+<script src="data-x-validator.js"><script> 
+</body> 
+
+3. "data-validation" attribute in form's elements can have the following possible values: 
+
+required  
+integer  
+number  
+email  
+alpha 
+range  
+enum 
+
+These attribute values can be combined using space separator. 
+
+Example: 
+ 
+<body> 
+<form data-validation="summary-top"> 
+<input type="text" data-validation="required email"> 
+<textarea data-validation="required"></textarea> 
+</form> 
+<script src="jquery.js"><script> 
+<script src="data-x-validator.js"><script> 
+</body> 
+ 
+"range" will have this format:  
+ 
+<input type="text" data-validation="required range-1-100"> <!-- It will validate the range from 1 to 100--> 
+ 
+"enum" will have this format:  
+ 
+<input type="text" data-validation="required enum-a-b-c-d-e"> <!-- It will validate that the value be one of the following: a,b,c,d or e --> 
+ 
+4. The fields which doesn't pass the validation should be displayed every time the onchange element of any field of the form is trigged.  
+ 
+5. The validation messages can be displayed in different ways: 
+
+Summary-top (all messages above the form) 
+Summary-bottom (all messages below the form) 
+field-left 
+field-right 
+field-bottom 
+field-top
