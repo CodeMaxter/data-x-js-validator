@@ -1,0 +1,70 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div id="dataValidationSummary"></div>
+
+        <form id="frmValidate" method="post" action="">
+            <div>
+                <label>Radio</label>
+                <span>Radio 01</span> <input type="radio" name="optRadio" value="radio01" data-validation="required" />
+                <span>Radio 02</span> <input type="radio" name="optRadio" value="radio02" />
+            </div>
+            <div>
+                <label for="txtText">Text</label>
+                <input type="text" name="txtText" id="txtText" data-validation="required" />
+            </div>
+            <div>
+                <label for="txtText">Password</label>
+                <input type="password" name="txtPassword" id="txtPassword" data-validation="required" />
+            </div>
+            <div>
+                <label for="txtTextarea">Textarea</label>
+                <textarea name="txtTextarea" id="txtTextarea" data-validation="required"></textarea>
+            </div>
+            <div>
+                <label for="cboSelectOne">Select One</label>
+                <select name="cboSelectOne" id="cboSelectOne" data-validation="required">
+                    <option value=""></option>
+                    <option value="0">Female</option>
+                    <option value="1">Male</option>
+                </select>
+            </div>
+            <div>
+                <label for="cboSelectMultiple">Select Multiple</label>
+                <select name="cboSelectMultiple" id="cboSelectMultiple" multiple="multiple" size="4" data-validation="required">
+                    <option value=""></option>
+                    <option value="1">Option 01</option>
+                    <option value="2">Option 02</option>
+                    <option value="3">Option 03</option>
+                    <option value="4">Option 04</option>
+                    <option value="5">Option 05</option>
+                    <option value="6">Option 06</option>
+                </select>
+            </div>
+            <div>
+                <label>Checkbox</label>
+                <span>Checkbox 01</span> <input type="checkbox" name="chkCheckbox" value="checkbox01" data-validation="required" />
+                <span>Checkbox 02</span> <input type="checkbox" name="chkCheckbox" value="checkbox01" />
+                <span>Checkbox 03</span> <input type="checkbox" name="chkCheckbox" value="checkbox03" />
+            </div>
+            <div>
+                <button>Submit</button>
+            </div>
+        </form>
+
+        <script type="text/javascript" src="js/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery/plugins/jquery.formvalidate.js"></script>
+
+        <script type="text/javascript">
+            $('#frmValidate').formValidate({summary: 'dataValidationSummary'});
+        </script>
+    </body>
+</html>
