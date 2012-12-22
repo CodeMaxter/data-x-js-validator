@@ -3,7 +3,7 @@
  * @author Alvaro José Agámez Licha, Johann Paul Echavarría Zapata
  */
 
-(function($) {
+(function ($) {
     'use strict';
 
 
@@ -13,8 +13,7 @@
      * @param {DOMElement} element
      * @returns {void}
      */
-    function hideError(element)
-    {
+    function hideError(element) {
         $(element).css({"border": ''});
     }
 
@@ -22,54 +21,51 @@
      * Validates whether the value of an element is alphanumeric
      * 
      * @param {DOMElement} element
-     * @param {DOMElement} form
      * @returns {boolean}
      */
-    function isValidAlnum(element, form) {
+    function isValidAlnum(element) {
         var pattern = /^[a-zA-z0-9]+$/;
 
         try {
-            if(!pattern.test(element.value)) {
+            if (!pattern.test(element.value)) {
                 showError(element, 'alnum');
                 return false;
             }
 
             return true;
-        } catch(Exception) {
+        } catch (Exception) {
             return false;
-        } 
+        }
     }
 
     /**
      * Validates whether the value of an element is alphabetic
      * 
      * @param {DOMElement} element
-     * @param {DOMElement} form
      * @returns {boolean}
      */
-    function isValidAlpha(element, form) {
+    function isValidAlpha(element) {
         var pattern = /^[a-zA-Z]+$/;
 
         try {
-            if(!pattern.test(element.value)) {
+            if (!pattern.test(element.value)) {
                 showError(element, 'alpha');
                 return false;
             }
 
             return true;
-        } catch(Exception) {
+        } catch (Exception) {
             return false;
-        } 
+        }
     }
 
     /**
      * Validates whether the value of an element is an email
      * 
      * @param {DOMElement} element
-     * @param {DOMElement} form
-     * @returns {boolean}
+     * @returns description {boolean}
      */
-    function isValidEmail(element, form) {
+    function isValidEmail(element) {
         var pattern = /(^[0-9a-zA-Z]+(?:[._][0-9a-zA-Z]+)*)@([0-9a-zA-Z]+(?:[._-][0-9a-zA-Z]+)*\.[0-9a-zA-Z]{2,3})$/;
 
         try {
@@ -79,7 +75,7 @@
             }
 
             return true;
-        } catch (Exception){
+        } catch (Exception) {
             return false;
         }
     }
@@ -88,10 +84,9 @@
      * Validates whether the value of an element is an integer
      * 
      * @param {DOMElement} element
-     * @param {DOMElement} form
      * @returns {boolean}
      */
-    function isValidInteger(element, form) {
+    function isValidInteger(element) {
         if ((undefined === element.value) || (null === element.value)) {
             return false;
         }
@@ -108,10 +103,9 @@
      * Validates whether the value of an element is an number
      * 
      * @param {DOMElement} element
-     * @param {DOMElement} form
      * @returns {boolean}
      */
-    function isValidNumber(element, form) {
+    function isValidNumber(element) {
         if (isNaN(parseFloat(element.value)) && isFinite(element.value)) {
             showError(element, 'number');
             return false;
@@ -123,49 +117,43 @@
     /**
      * Validates whether an required element has a value
      * 
-     * @param {DOMElement} element The element to validate
-     * @param {DOMElement form The form that contains the element to validate
+     * @param {DOMElement} element
      * @returns {boolean} TRUE on error, FALSE otherwise
      */
-    function isValidRequired(element, form) {
+    function isValidRequired(element) {
         var errorFlag = true;
 
         switch (element.type) {
-            case 'checkbox':
-            case 'radio': {
-                if (0 === $(':input[name="' + element.name + '"]:checked', form).length) {
+            case "checkbox":
+            case "radio":
+                if (0 === $(':input[name="' + element.name + '"]:checked', element.form).length) {
                     errorFlag = false;
                 }
-                ;
 
                 break;
-            }
 
             case 'password':
             case 'textarea':
-            case 'text': {
+            case 'text':
                 if ('' === $.trim($(element).val())) {
                     errorFlag = false;
                 }
 
                 break;
-            }
 
-            case 'select-one': {
+            case 'select-one':
                 if ('' === $('option:selected', element).val()) {
                     errorFlag = false;
                 }
 
                 break;
-            }
 
-            case 'select-multiple': {
+            case 'select-multiple':
                 if (0 === $('option:selected', element).length) {
                     errorFlag = false;
                 }
 
                 break;
-            }
         }
 
         if (!errorFlag) {
@@ -183,7 +171,7 @@
      * @returns {void}
      */
     function showError(element, type) {
-        alert("Error: " + element.name + " " + type)
+        alert("Error: " + element.name + " " + type);
         $(element).css({"border": "2px solid red"});
     }
 
@@ -208,48 +196,47 @@
                     hideError(element);
 
                     var dataValidations = $(element).attr('data-validation').split(' ');
-                    $(dataValidations).each(function(index, validation) {
+                    $(dataValidations).each(function (index, validation) {
                         switch (validation) {
-                            case "alnum": {
+                            case "alnum":
                                 if ($.inArray("require", dataValidations)
                                     || "" !== element.value
                                 ) {
-                                    errorFlag = isValidAlnum(element, form);
+                                    errorFlag = isValidAlnum(element);
                                 }
                                 break;
-                            }
-                            case "alpha": {
+
+                            case "alpha":
                                 if ($.inArray("require", dataValidations)
                                     || "" !== element.value
                                 ) {
-                                    errorFlag = isValidAlpha(element, form);
+                                    errorFlag = isValidAlpha(element);
                                 }
                                 break;
-                            }
 
-                            case "email": {
+                            case "email": 
                                 if ($.inArray("require", dataValidations)
                                     || "" !== element.value
                                 ) {
-                                    errorFlag = isValidEmail(element, form);
+                                    errorFlag = isValidEmail(element);
                                 }
                                 break;
-                            }
 
-                            case "integer": {
-                                errorFlag = isValidInteger(element, form);
+                            case "integer":
+                                errorFlag = isValidInteger(element);
                                 break;
-                            }
 
-                            case "required": {
-                                errorFlag = isValidRequired(element, form);
+                            case "number":
+                                errorFlag = isValidNumber(element);
                                 break;
-                            }
 
-                            case "number": {
-                                errorFlag = isValidNumber(element, form);
+                            case "required":
+                                errorFlag = isValidRequired(element);
                                 break;
-                            }
+
+                            default:
+                                // TODO: Make something
+                                break;
                         }
                     });
                 });
