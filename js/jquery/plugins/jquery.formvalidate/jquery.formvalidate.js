@@ -173,7 +173,7 @@
     function showError(element, type) {
         //alert("Error: " + element.name + " " + type)
         //alert(form.attr("data-validation"));
-        errorMess = "aaa"; /*asignación temporal*/
+        var errorMess = "aaa"; /*asignación temporal*/
         if (undefined !== $(element).data(".errorMessage") 
             || "" !== $(element).data(".errorMessage")
         ) {
@@ -181,7 +181,7 @@
         //return false;
         }
 
-        switch (form.attr("data-validation")) {
+        switch ($(element.form).attr("data-validation")) {
             case "field-left":
                 $("<span class='errorMessage'>No pasó validación</span>").insertBefore($(element)).show(1200);
                  break;
