@@ -171,8 +171,38 @@
      * @returns {void}
      */
     function showError(element, type) {
-        alert("Error: " + element.name + " " + type);
-        $(element).css({"border": "2px solid red"});
+        //alert("Error: " + element.name + " " + type)
+        //alert(form.attr("data-validation"));
+        errorMess = "aaa"; /*asignación temporal*/
+        if (undefined !== $(element).data(".errorMessage") 
+            || "" !== $(element).data(".errorMessage")
+        ) {
+        //alert("sal");
+        //return false;
+        }
+
+        switch (form.attr("data-validation")) {
+            case "field-left":
+                $("<span class='errorMessage'>No pasó validación</span>").insertBefore($(element)).show(1200);
+                 break;
+            case "field-right":
+                //$(element).after("<span class='errorMessage'>No pasó validación</span>").hide().fadeIn("slow");
+                $("<span class='errorMessage'>No pasó validación</span>").insertAfter($(element)).show(1200);
+                break;		
+            case "field-bottom":
+                $("<div class='errorMessage'>No pasó validación</div>").insertAfter($(element)).show(1200);
+                 break;
+            case "field-top":
+                $("<div class='errorMessage'>No pasó validación</div>").insertBefore($(element)).show(1200);
+                break;
+            case "summary-top":
+                break;
+            case "summary-bottom":
+                break;		
+        }
+
+        $(element).data("errorMessage",errorMess);
+        $(element).css({"border": "1px solid red"});
     }
 
     $.fn.formValidate = function(options) {
