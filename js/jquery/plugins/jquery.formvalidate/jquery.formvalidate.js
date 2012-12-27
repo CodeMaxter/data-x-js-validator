@@ -6,6 +6,38 @@
 (function ($) {
     'use strict';
 
+    function checkValidations(dataValidations) {
+        var validationMap = {
+            "integer": ["range", "enum"],
+            "number": ["range", "enum"],
+            "alnum": ["email", "enum"],
+            "alpha": ["enum"],
+            "range": ["integer", "number", "enum"],
+            "enum": ["integer", "number", "alnum", "alpha"],
+            "email": ["alnum", "enum"]
+        };
+
+        /** 
+         * The required validation match with every other, then we don't need
+         * worry about it
+         */
+        var index = dataValidations.indexOf('required');
+        var head = dataValidations.slice(0, index);
+        var tail = dataValidations.slice(index + 1);
+        dataValidations = head.concat(tail);
+
+        // Takes the first validation like a pivot to compare
+        var pivot = dataValidations.shift();
+        if (dataValidations.length > 0) {
+            for (var index = 0; index < dataValidations.length; index++) {
+                if (-1 === validationMap[pivot].indexOf(dataValidations[index])) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 
     /**
      * Hide the error message for an element
@@ -226,6 +258,10 @@
                     hideError(element);
 
                     var dataValidations = $(element).attr('data-validation').split(' ');
+                    if (!checkValidations(dataValidations)) {
+                        alert("Error: wrong combination of validations");
+                    }
+
                     $(dataValidations).each(function (index, validation) {
                         switch (validation) {
                             case "alnum":
