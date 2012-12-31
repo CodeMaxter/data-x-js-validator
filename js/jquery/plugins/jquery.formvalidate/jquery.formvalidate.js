@@ -6,7 +6,7 @@
 (function ($) {
     'use strict';
 
-    function checkValidations(dataValidations) {
+    function checkValidations(dataValidations, element) {
         var validationMap = {
             "integer": ["range", "enum"],
             "number": ["range", "enum"],
@@ -31,6 +31,7 @@
         if (dataValidations.length > 0) {
             for (var index = 0; index < dataValidations.length; index++) {
                 if (-1 === validationMap[pivot].indexOf(dataValidations[index])) {
+					showError(element, 'missconfig');
                     return false;
                 }
             }
@@ -46,7 +47,7 @@
      * @returns {void}
      */
     function hideError(element) {
-        $(element).css({"border": ''});
+        $(element).css({"border": ''});        
     }
 
     /**
@@ -203,9 +204,33 @@
      * @returns {void}
      */
     function showError(element, type) {
-        //alert("Error: " + element.name + " " + type)
-        //alert(form.attr("data-validation"));
-        var errorMess = "aaa"; /*asignación temporal*/
+
+        var errorMess;
+    
+        switch(type){
+        case "missconfig":
+        errorMess="Validation attributes in conflict. Please fix it.";
+		break;
+        case "alnum":
+        errorMess="It must be Alphanumeric.";
+        break;
+        case "alpha":
+        errorMess="It must be alphabetical.";
+        break;
+        case "email":
+        errorMess="It must be a correct email.";
+        break;
+        case "integer":
+        errorMess="It must be an integer.";
+        break;
+        case "number":
+        errorMess="It must be number.";
+        break;
+        case "required":
+        errorMess="It must be filled.";
+        break;
+		}
+        
         if (undefined !== $(element).data(".errorMessage") 
             || "" !== $(element).data(".errorMessage")
         ) {
@@ -215,17 +240,17 @@
 
         switch ($(element.form).attr("data-validation")) {
             case "field-left":
-                $("<span class='errorMessage'>No pasó validación</span>").insertBefore($(element)).show(1200);
+                $("<span class='errorMessage'>"+errorMess+"</span>").insertBefore($(element)).show(1200);
                  break;
             case "field-right":
                 //$(element).after("<span class='errorMessage'>No pasó validación</span>").hide().fadeIn("slow");
-                $("<span class='errorMessage'>No pasó validación</span>").insertAfter($(element)).show(1200);
+                $("<span class='errorMessage'>"+errorMess+"</span>").insertAfter($(element)).show(1200);
                 break;		
             case "field-bottom":
-                $("<div class='errorMessage'>No pasó validación</div>").insertAfter($(element)).show(1200);
+                $("<div class='errorMessage'>"+errorMess+"</div>").insertAfter($(element)).show(1200);
                  break;
             case "field-top":
-                $("<div class='errorMessage'>No pasó validación</div>").insertBefore($(element)).show(1200);
+                $("<div class='errorMessage'>"+errorMess+"</div>").insertBefore($(element)).show(1200);
                 break;
             case "summary-top":
                 break;
@@ -251,16 +276,17 @@
             }
 
             form.submit(function() {
-                var errorFlag = false;
+                $(".errorMessage").remove(); /*Oculta mensajes de error*/
+                var errorFlag = true;
 
                 $(":input[data-validation]", this).each(function(index, element) {
                     // Remove the error css attributes o class
                     hideError(element);
 
                     var dataValidations = $(element).attr('data-validation').split(' ');
-                    if (!checkValidations(dataValidations)) {
-                        alert("Error: wrong combination of validations");
-                    }
+                    /*Verify validations conflict*/    
+                    errorFlag = checkValidations(dataValidations, element);
+                                        
 
                     $(dataValidations).each(function (index, validation) {
                         switch (validation) {
@@ -268,7 +294,9 @@
                                 if ($.inArray("require", dataValidations)
                                     || "" !== element.value
                                 ) {
-                                    errorFlag = isValidAlnum(element);
+                                    if(false === isValidAlnum(element)){
+                                    errorFlag = false;
+                                    }
                                 }
                                 break;
 
@@ -276,7 +304,9 @@
                                 if ($.inArray("require", dataValidations)
                                     || "" !== element.value
                                 ) {
-                                    errorFlag = isValidAlpha(element);
+                                    if(false === isValidAlpha(element)){
+                                    errorFlag = false;
+                                    }                                                                    
                                 }
                                 break;
 
@@ -284,20 +314,28 @@
                                 if ($.inArray("require", dataValidations)
                                     || "" !== element.value
                                 ) {
-                                    errorFlag = isValidEmail(element);
+                                    if(false === isValidEmail(element)){
+                                    errorFlag = false;
+                                    }                                                                    
                                 }
                                 break;
 
                             case "integer":
-                                errorFlag = isValidInteger(element);
+                                    if(false === isValidInteger(element)){
+                                    errorFlag = false;
+                                    }                                                                                            
                                 break;
 
                             case "number":
-                                errorFlag = isValidNumber(element);
+                                    if(false === isValidNumber(element)){
+                                    errorFlag = false;
+                                    }                            
                                 break;
 
                             case "required":
-                                errorFlag = isValidRequired(element);
+                                    if(false === isValidRequired(element)){
+                                    errorFlag = false;
+                                    }                                                            
                                 break;
 
                             default:

@@ -1,15 +1,18 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
 <!DOCTYPE html>
 <html>
     <head>
         <title></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-        <link type="text/css" rel="stylesheet" href="js/jquery/plugins/jquery.formvalidate/css/jquery.formvalidate.css" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">		
+		<link type="text/css" rel="stylesheet" href="js/jquery/plugins/jquery.formvalidate/css/jquery.formvalidate.css" />
     </head>
     <body>
         <div id="dataValidationSummary"></div>
 
-        <form id="frmValidate" method="post" action="" data-validation="field-right">
+        <form id="frmValidate" method="post" data-validation="field-right" action="" >
             <div>
                 <label>Radio</label>
                 <span>Radio 01</span> <input type="radio" name="optRadio" value="radio01" data-validation="required" />
@@ -17,14 +20,14 @@
             </div>
             <div>
                 <label for="txtText">Alnum</label>
-                <input type="text" name="txtAlnum" id="txtAlnum" data-validation="required number alpha" />
+                <input type="text" name="txtAlnum" id="txtAlnum" data-validation="required alnum" />
             </div>
             <div>
                 <label for="txtText">Alpha</label>
-                <input type="text" name="txtAlpha" id="txtAlpha" data-validation="alpha required enum number" />
+                <input type="text" name="txtAlpha" id="txtAlpha" data-validation="required alpha" />
             </div>
             <div>
-                <label for="txtText">Text</label>
+                <label for="txtText">Integer</label>
                 <input type="text" name="txtText" id="txtText" data-validation="required integer" />
             </div>
             <div>
