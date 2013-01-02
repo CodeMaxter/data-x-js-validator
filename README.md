@@ -1,7 +1,7 @@
 data-x-js-validator
 ===================
 
-jQuery data-x validator plugin 0.1
+<i>jQuery data-x validator plugin 0.1</i>
 
 
 This is a form validator using jquery and the html5 feature data-x.
