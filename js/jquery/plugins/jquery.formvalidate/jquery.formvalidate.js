@@ -51,7 +51,8 @@ if (!Array.prototype.indexOf) {
             "alpha": ["enum"],
             "range": ["integer", "number", "enum"],
             "enum": ["integer", "number", "alnum", "alpha"],
-            "email": ["alnum", "enum"]
+            "email": ["alnum", "enum"],
+            "regex": ["integer", "number", "alnum", "alpha", "email"]
         };
 
         /** 
@@ -184,6 +185,29 @@ if (!Array.prototype.indexOf) {
         return true;
     }
 
+    function isValidRegex(element) {
+        switch (element.type) {
+            case 'password':
+            case 'textarea':
+            case 'text':
+                try {
+                    if (!pattern.test($(element).val())) {
+                        showError(element, 'regex');
+                        return false;
+                    }
+                } catch (Exception) {
+                    return false;
+                }
+
+                break;
+            default:
+                // TODO: Do something with the fields that do not allow the validation regex
+                break;
+        }
+
+        return true;
+    }
+
     /**
      * Validates whether an required element has a value
      * 
@@ -245,29 +269,29 @@ if (!Array.prototype.indexOf) {
 
         var errorMess;
     
-        switch(type){
-        case "missconfig":
-        errorMess="Validation attributes in conflict. Please fix it.";
-		break;
-        case "alnum":
-        errorMess="It must be Alphanumeric.";
-        break;
-        case "alpha":
-        errorMess="It must be alphabetical.";
-        break;
-        case "email":
-        errorMess="It must be a correct email.";
-        break;
-        case "integer":
-        errorMess="It must be an integer.";
-        break;
-        case "number":
-        errorMess="It must be number.";
-        break;
-        case "required":
-        errorMess="It must be filled.";
-        break;
-		}
+        switch (type) {
+            case "wrongValidationsConfig":
+                errorMess = "Validation attributes in conflict. Please fix it.";
+                break;
+            case "alnum":
+                errorMess = "It must be Alphanumeric.";
+                break;
+            case "alpha":
+                errorMess = "It must be alphabetical.";
+                break;
+            case "email":
+                errorMess = "It must be a correct email.";
+                break;
+            case "integer":
+                errorMess = "It must be an integer.";
+                break;
+            case "number":
+                errorMess = "It must be number.";
+                break;
+            case "required":
+                errorMess = "It must be filled.";
+                break;
+        }
         
         if (undefined !== $(element).data(".errorMessage") 
             || "" !== $(element).data(".errorMessage")
@@ -296,8 +320,8 @@ if (!Array.prototype.indexOf) {
                 break;		
         }
 
-        $(element).data("errorMessage",errorMess);
-        $(element).css({"border": "1px solid red"});
+        $(element).data("errorMessage", errorMess);
+        $(element).css({"border": "2px solid red"});
     }
 
     $.fn.formValidate = function(options) {
@@ -322,9 +346,10 @@ if (!Array.prototype.indexOf) {
                     hideError(element);
 
                     var dataValidations = $(element).attr('data-validation').split(' ');
-                    /*Verify validations conflict*/    
-                    errorFlag = checkValidations(dataValidations, element);
-                                        
+                    if (!checkValidations(dataValidations)) {
+                        showError(element, 'wrongValidationsConfig');
+//                        return false;
+                    }
 
                     $(dataValidations).each(function (index, validation) {
                         switch (validation) {
@@ -370,6 +395,10 @@ if (!Array.prototype.indexOf) {
                                     }                            
                                 break;
 
+                            case "regex":
+                                errorFlag = isValidRegex(element);
+                                break;
+
                             case "required":
                                     if(false === isValidRequired(element)){
                                     errorFlag = false;
@@ -377,7 +406,7 @@ if (!Array.prototype.indexOf) {
                                 break;
 
                             default:
-                                // TODO: Make something
+                                // TODO: Do something
                                 break;
                         }
                     });
