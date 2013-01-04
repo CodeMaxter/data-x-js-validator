@@ -3,7 +3,7 @@
  * @author Alvaro José Agámez Licha, Johann Paul Echavarría Zapata
  */
 
-/*Begin of Array.indexOf definition
+/*Begin of Array.indexOf definition for IE<9
 https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/IndexOf#Compatibility
 */ 
 if (!Array.prototype.indexOf) {
@@ -221,8 +221,7 @@ if (!Array.prototype.indexOf) {
             case "checkbox":
             case "radio":
                 if (0 === $(':input[name="' + element.name + '"]:checked', element.form).length) {
-                    errorFlag = false;
-                    
+                    errorFlag = false;                    
                 }
 
                 break;
