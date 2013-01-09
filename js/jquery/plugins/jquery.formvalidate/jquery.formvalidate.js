@@ -69,7 +69,6 @@ if (!Array.prototype.indexOf) {
         if (dataValidations.length > 0) {
             for (var index = 0; index < dataValidations.length; index++) {
                 if (-1 === validationMap[pivot].indexOf(dataValidations[index])) {
-					showError(element, 'missconfig');
                     return false;
                 }
             }
