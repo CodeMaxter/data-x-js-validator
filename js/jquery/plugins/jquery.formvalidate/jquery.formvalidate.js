@@ -78,6 +78,48 @@ if (!Array.prototype.indexOf) {
     }
 
     /**
+     * 
+     * @param {Array} validations Validations to parse
+     * @returns {object}
+     */
+    function parseValidations(validations) {
+        var parsed = [];
+
+        $(validations).each(function(index, validation) {
+            var beginIndex = validation.indexOf('[');
+            if (-1 !== beginIndex) {
+                var endIndex = validation.lastIndexOf(']');
+
+                if (-1 !== endIndex) {
+                    var params = validation.substring(beginIndex + 1, endIndex);
+
+                    if (params.indexOf("-")) {
+                        params = params.split("-");
+                    } else {
+                        if (params.indexOf(",")) {
+                            params = params.split(",");
+                        }
+                    }
+
+                    parsed.push({
+                        "name" : validation.substring(0, beginIndex),
+                        "params": params
+                    });
+                } else {
+                    return false;
+                }
+            } else {
+                parsed.push({
+                    "name" : validation,
+                    "params": null
+                });
+            }
+        });
+
+        return parsed;
+    }
+
+    /**
      * Hide the error message for an element
      * 
      * @param {DOMElement} element
@@ -133,7 +175,7 @@ if (!Array.prototype.indexOf) {
      * Validates whether the value of an element is an email
      * 
      * @param {DOMElement} element
-     * @returns description {boolean}
+     * @returns {boolean}
      */
     function isValidEmail(element) {
         var pattern = /(^[0-9a-zA-Z]+(?:[._][0-9a-zA-Z]+)*)@([0-9a-zA-Z]+(?:[._-][0-9a-zA-Z]+)*\.[0-9a-zA-Z]{2,3})$/;
@@ -148,6 +190,16 @@ if (!Array.prototype.indexOf) {
         } catch (Exception) {
             return false;
         }
+    }
+
+    /**
+     * 
+     * @param {DOMElement} element
+     * @param {Array} params
+     * @returns {bollean}
+     */
+    function isValidEnum(element, params) {
+        
     }
 
     /**
@@ -184,24 +236,34 @@ if (!Array.prototype.indexOf) {
         return true;
     }
 
-    function isValidRegex(element) {
-        switch (element.type) {
-            case 'password':
-            case 'textarea':
-            case 'text':
-                try {
-                    if (!pattern.test($(element).val())) {
-                        showError(element, 'regex');
-                        return false;
-                    }
-                } catch (Exception) {
-                    return false;
-                }
+    /**
+     * 
+     * @param {DOMElement} element
+     * @param {integer} min
+     * @param {integ} maxer
+     * @returns {Boolean}
+     */
+    function isValidRange(element, min, max)
+    {
+        // TODO Validar que min y max sean enteros
+        if (element.value < min || element.value > max) {
+            return false;
+        }
+    
+        return true;
+    }
 
-                break;
-            default:
-                // TODO: Do something with the fields that do not allow the validation regex
-                break;
+    /**
+     * 
+     * @param {DOMElement} element
+     * @param {string} expresion
+     * @returns {Boolean}
+     */
+    function isValidRegex(element, expresion) {
+        var regExp = new RegExp(expresion);
+
+        if (!regExp.test(element.value)) {
+            return false;
         }
 
         return true;
@@ -257,6 +319,23 @@ if (!Array.prototype.indexOf) {
     }
 
     /**
+     * 
+     * @param {string} value
+     * @param {Array} validations
+     * @returns {integer}
+     */
+    function searchValidation(value, validations)
+    {
+        for (var index = 0; index < validations.length; index++) {
+            if (validations[index].name === value) {
+                return index;
+            }
+        };
+
+        return -1;
+    }
+
+    /**
      * Displays the error message for an element that is not valid
      * 
      * @param {DOMElement} element
@@ -264,7 +343,6 @@ if (!Array.prototype.indexOf) {
      * @returns {void}
      */
     function showError(element, type) {
-
         var errorMess;
     
         switch (type) {
@@ -285,6 +363,12 @@ if (!Array.prototype.indexOf) {
                 break;
             case "number":
                 errorMess = "It must be number.";
+                break;
+            case "range":
+                errorMess = "Invalid value for the range.";
+                break;
+            case "regex":
+                errorMess = "Invalid value for the regular expression.";
                 break;
             case "required":
                 errorMess = "It must be filled.";
@@ -344,63 +428,85 @@ if (!Array.prototype.indexOf) {
                     hideError(element);
 
                     var dataValidations = $(element).attr('data-validation').split(' ');
-                    if (!checkValidations(dataValidations)) {
-                        showError(element, 'wrongValidationsConfig');
-//                        return false;
-                    }
+                    dataValidations = parseValidations(dataValidations);
+
+//                    if (false !== dataValidations 
+//                        && !checkValidations(dataValidations.validations)
+//                    ) {
+//                        showError(element, 'wrongValidationsConfig');
+//                    }
 
                     $(dataValidations).each(function (index, validation) {
-                        switch (validation) {
+                        var isRequired = searchValidation("required", dataValidations);
+
+                        switch (validation.name) {
                             case "alnum":
-                                if ($.inArray("require", dataValidations)
-                                    || "" !== element.value
-                                ) {
-                                    if(false === isValidAlnum(element)){
-                                    errorFlag = false;
+                                if (-1 !== isRequired || "" !== element.value) {
+                                    errorFlag = isValidAlnum(element);
+                                    if (!errorFlag) {
+                                        showError(element, "alnum");
                                     }
                                 }
                                 break;
 
                             case "alpha":
-                                if ($.inArray("require", dataValidations)
-                                    || "" !== element.value
-                                ) {
-                                    if(false === isValidAlpha(element)){
-                                    errorFlag = false;
-                                    }                                                                    
+                                if (-1 !== isRequired || "" !== element.value) {
+                                    errorFlag = isValidAlpha(element);
                                 }
                                 break;
 
                             case "email": 
-                                if ($.inArray("require", dataValidations)
-                                    || "" !== element.value
-                                ) {
-                                    if(false === isValidEmail(element)){
-                                    errorFlag = false;
-                                    }                                                                    
+                                if (-1 !== isRequired || "" !== element.value) {
+                                    errorFlag = isValidEmail(element);
+                                }
+                                break;
+
+                            case "enum":
+                                if (isRequired || "" !== element.value) {
+                                    errorFlag = isValidEnum(element, validation.params);
                                 }
                                 break;
 
                             case "integer":
-                                    if(false === isValidInteger(element)){
-                                    errorFlag = false;
-                                    }                                                                                            
+                                if (-1 !== isRequired || "" !== element.value) {
+                                    errorFlag = isValidInteger(element);
+                                }
                                 break;
 
                             case "number":
-                                    if(false === isValidNumber(element)){
-                                    errorFlag = false;
-                                    }                            
+                                if (-1 !== isRequired || "" !== element.value ) {
+                                    errorFlag = isValidNumber(element);
+                                }
+                                break;
+
+                            case "range":
+                                if (-1 !== isRequired || "" !== element.value ) {
+                                    errorFlag = isValidRange(
+                                        element, 
+                                        validation.params[0], 
+                                        validation.params[1]
+                                    );
+
+                                    if (!errorFlag) {
+                                        showError(element, "range");
+                                    }
+                                }
                                 break;
 
                             case "regex":
-                                errorFlag = isValidRegex(element);
+                                if (-1 !== isRequired || "" !== element.value) {
+                                    errorFlag = isValidRegex(element, validation.params);
+
+                                    if (!errorFlag) {
+                                        showError(element, "regex");
+                                    }
+                                }
                                 break;
 
                             case "required":
-                                    if(false === isValidRequired(element)){
-                                    errorFlag = false;
-                                    }                                                            
+                                if (-1 !== isRequired || "" !== element.value) {
+                                    errorFlag = isValidRequired(element);
+                                }                                                            
                                 break;
 
                             default:

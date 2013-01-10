@@ -11,6 +11,14 @@
 
         <form id="frmValidate" method="post" action="" data-validation="field-right">
             <div>
+                <label for="txtRange">Range</label>
+                <input type="text" name="txtRange" id="txtRange" data-validation="range[2-5] required" />
+            </div>
+            <div>
+                <label for="txtRegex">Regex</label>
+                <input type="text" name="txtRegex" id="txtRegex" data-validation="regex[^[a-zA-Z]+$] required" />
+            </div>
+            <div>
                 <label>Radio</label>
                 <span>Radio 01</span> <input type="radio" name="optRadio" value="radio01" data-validation="required" />
                 <span>Radio 02</span> <input type="radio" name="optRadio" value="radio02" />
