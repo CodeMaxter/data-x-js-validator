@@ -11,6 +11,10 @@
 
         <form id="frmValidate" method="post" action="" data-validation="field-right">
             <div>
+                <label for="txtEnum">Enum</label>
+                <input type="text" name="txtEnum" id="txtEnum" data-validation="enum[1,2,3,4,5,hello,world] required" />
+            </div>
+            <div>
                 <label for="txtRange">Range</label>
                 <input type="text" name="txtRange" id="txtRange" data-validation="range[2-5] required" />
             </div>

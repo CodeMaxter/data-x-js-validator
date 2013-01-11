@@ -78,48 +78,6 @@ if (!Array.prototype.indexOf) {
     }
 
     /**
-     * 
-     * @param {Array} validations Validations to parse
-     * @returns {object}
-     */
-    function parseValidations(validations) {
-        var parsed = [];
-
-        $(validations).each(function(index, validation) {
-            var beginIndex = validation.indexOf('[');
-            if (-1 !== beginIndex) {
-                var endIndex = validation.lastIndexOf(']');
-
-                if (-1 !== endIndex) {
-                    var params = validation.substring(beginIndex + 1, endIndex);
-
-                    if (params.indexOf("-")) {
-                        params = params.split("-");
-                    } else {
-                        if (params.indexOf(",")) {
-                            params = params.split(",");
-                        }
-                    }
-
-                    parsed.push({
-                        "name" : validation.substring(0, beginIndex),
-                        "params": params
-                    });
-                } else {
-                    return false;
-                }
-            } else {
-                parsed.push({
-                    "name" : validation,
-                    "params": null
-                });
-            }
-        });
-
-        return parsed;
-    }
-
-    /**
      * Hide the error message for an element
      * 
      * @param {DOMElement} element
@@ -140,7 +98,7 @@ if (!Array.prototype.indexOf) {
 
         try {
             if (!pattern.test(element.value)) {
-                showError(element, 'alnum');
+//                showError(element, 'alnum');
                 return false;
             }
 
@@ -161,7 +119,7 @@ if (!Array.prototype.indexOf) {
 
         try {
             if (!pattern.test(element.value)) {
-                showError(element, 'alpha');
+//                showError(element, 'alpha');
                 return false;
             }
 
@@ -182,7 +140,7 @@ if (!Array.prototype.indexOf) {
 
         try {
             if (!pattern.test(element.value)) {
-                showError(element, 'email');
+//                showError(element, 'email');
                 return false;
             }
 
@@ -199,7 +157,11 @@ if (!Array.prototype.indexOf) {
      * @returns {bollean}
      */
     function isValidEnum(element, params) {
-        
+        if (-1 === params.indexOf(element.value)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -214,7 +176,7 @@ if (!Array.prototype.indexOf) {
         }
 
         if (0 !== element.value % 1) {
-            showError(element, 'integer');
+//            showError(element, 'integer');
             return false;
         }
 
@@ -229,7 +191,7 @@ if (!Array.prototype.indexOf) {
      */
     function isValidNumber(element) {
         if (isNaN(parseFloat(element.value)) && isFinite(element.value)) {
-            showError(element, 'number');
+//            showError(element, 'number');
             return false;
         }
 
@@ -240,7 +202,7 @@ if (!Array.prototype.indexOf) {
      * 
      * @param {DOMElement} element
      * @param {integer} min
-     * @param {integ} maxer
+     * @param {integer} max
      * @returns {Boolean}
      */
     function isValidRange(element, min, max)
@@ -311,11 +273,53 @@ if (!Array.prototype.indexOf) {
                 break;
         }
 
-        if (!errorFlag) {
-            showError(element, 'required');
-        }
+//        if (!errorFlag) {
+//            showError(element, 'required');
+//        }
 
         return errorFlag;
+    }
+
+    /**
+     * 
+     * @param {Array} validations Validations to parse
+     * @returns {object}
+     */
+    function parseValidations(validations) {
+        var parsed = [];
+
+        $(validations).each(function(index, validation) {
+            var beginIndex = validation.indexOf('[');
+            if (-1 !== beginIndex) {
+                var endIndex = validation.lastIndexOf(']');
+
+                if (-1 !== endIndex) {
+                    var params = validation.substring(beginIndex + 1, endIndex);
+
+                    if (-1 !== params.indexOf("-")) {
+                        params = params.split("-");
+                    } else {
+                        if (-1 !== params.indexOf(",")) {
+                            params = params.split(",");
+                        }
+                    }
+
+                    parsed.push({
+                        "name" : validation.substring(0, beginIndex),
+                        "params": params
+                    });
+                } else {
+                    return false;
+                }
+            } else {
+                parsed.push({
+                    "name" : validation,
+                    "params": null
+                });
+            }
+        });
+
+        return parsed;
     }
 
     /**
@@ -357,6 +361,12 @@ if (!Array.prototype.indexOf) {
                 break;
             case "email":
                 errorMess = "It must be a correct email.";
+                break;
+            case "enum":
+                errorMess = "The value it not in the Parameters.";
+                break;
+            case "enumParams":
+                errorMess = "Parameters were not supplied.";
                 break;
             case "integer":
                 errorMess = "It must be an integer.";
@@ -438,14 +448,12 @@ if (!Array.prototype.indexOf) {
 
                     $(dataValidations).each(function (index, validation) {
                         var isRequired = searchValidation("required", dataValidations);
+                        var errorType = validation.name;
 
                         switch (validation.name) {
                             case "alnum":
                                 if (-1 !== isRequired || "" !== element.value) {
                                     errorFlag = isValidAlnum(element);
-                                    if (!errorFlag) {
-                                        showError(element, "alnum");
-                                    }
                                 }
                                 break;
 
@@ -462,8 +470,12 @@ if (!Array.prototype.indexOf) {
                                 break;
 
                             case "enum":
-                                if (isRequired || "" !== element.value) {
-                                    errorFlag = isValidEnum(element, validation.params);
+                                if (-1 !== isRequired || "" !== element.value) {
+                                    if (Array.isArray(validation.params)) {
+                                        errorFlag = isValidEnum(element, validation.params);
+                                    } else {
+                                        errorType = "enumParams";
+                                    }
                                 }
                                 break;
 
@@ -486,20 +498,12 @@ if (!Array.prototype.indexOf) {
                                         validation.params[0], 
                                         validation.params[1]
                                     );
-
-                                    if (!errorFlag) {
-                                        showError(element, "range");
-                                    }
                                 }
                                 break;
 
                             case "regex":
                                 if (-1 !== isRequired || "" !== element.value) {
                                     errorFlag = isValidRegex(element, validation.params);
-
-                                    if (!errorFlag) {
-                                        showError(element, "regex");
-                                    }
                                 }
                                 break;
 
@@ -512,6 +516,10 @@ if (!Array.prototype.indexOf) {
                             default:
                                 // TODO: Do something
                                 break;
+                        }
+
+                        if (!errorFlag) {
+                            showError(element, errorType);
                         }
                     });
                 });
