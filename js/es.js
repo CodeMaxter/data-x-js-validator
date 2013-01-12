@@ -1,3 +1,4 @@
+/* Configuración de mensajes en español */
 var ATTRIBUTES_IN_CONFLICT = "Atributos de validación en conflicto. Favor corregir.";
 var ALPHANUMERIC_MESSAGE = "Debe ser alfanumérico.";
 var ALPHABETICAL_MESSAGE = "Debe tener sólo letras.";

@@ -1,3 +1,4 @@
+/* English messages configuration */
 var ATTRIBUTES_IN_CONFLICT = "Validation attributes in conflict. Please fix it.";
 var ALPHANUMERIC_MESSAGE = "It must be Alphanumeric.";
 var ALPHABETICAL_MESSAGE = "It must be alphabetical.";
