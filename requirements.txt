@@ -42,11 +42,11 @@ Example:
  
 "range" will have this format:  
  
-<input type="text" data-validation="required range-1-100"> <!-- It will validate the range from 1 to 100--> 
+<input type="text" data-validation="required range[1-100]"> <!-- It will validate the range from 1 to 100--> 
  
 "enum" will have this format:  
  
-<input type="text" data-validation="required enum-a-b-c-d-e"> <!-- It will validate that the value be one of the following: a,b,c,d or e --> 
+<input type="text" data-validation="required enum[a,b,c,d,e]"> <!-- It will validate that the value be one of the following: a,b,c,d or e --> 
  
 4. The fields which doesn't pass the validation should be displayed every time the onchange element of any field of the form is trigged.  
  

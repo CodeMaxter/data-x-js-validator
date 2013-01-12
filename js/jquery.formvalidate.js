@@ -351,37 +351,37 @@ if (!Array.prototype.indexOf) {
     
         switch (type) {
             case "wrongValidationsConfig":
-                errorMess = "Validation attributes in conflict. Please fix it.";
+                errorMess = ATTRIBUTES_IN_CONFLICT;
                 break;
             case "alnum":
-                errorMess = "It must be Alphanumeric.";
+                errorMess = ALPHANUMERIC_MESSAGE;
                 break;
             case "alpha":
-                errorMess = "It must be alphabetical.";
+                errorMess = ALPHABETICAL_MESSAGE;
                 break;
             case "email":
-                errorMess = "It must be a correct email.";
+                errorMess = EMAIL_MESSAGE;
                 break;
             case "enum":
-                errorMess = "The value it not in the Parameters.";
+                errorMess = ENUM_MESSAGE;
                 break;
             case "enumParams":
-                errorMess = "Parameters were not supplied.";
+                errorMess = ENUM_PARAMS_MESSAGE;
                 break;
             case "integer":
-                errorMess = "It must be an integer.";
+                errorMess = INTEGER_MESSAGE;
                 break;
             case "number":
-                errorMess = "It must be number.";
+                errorMess = NUMBER_MESSAGE;
                 break;
             case "range":
-                errorMess = "Invalid value for the range.";
+                errorMess = RANGE_MESSAGE;
                 break;
             case "regex":
-                errorMess = "Invalid value for the regular expression.";
+                errorMess = REGEX_MESSAGE;
                 break;
             case "required":
-                errorMess = "It must be filled.";
+                errorMess = REQUIRED_MESSAGE;
                 break;
         }
         
@@ -430,7 +430,7 @@ if (!Array.prototype.indexOf) {
             }
 
             form.submit(function() {
-                $(".errorMessage").remove(); /*Oculta mensajes de error*/
+                $(".errorMessage").remove(); /*hide error messages*/
                 var errorFlag = true;
 
                 $(":input[data-validation]", this).each(function(index, element) {
