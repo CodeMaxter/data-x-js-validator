@@ -2,44 +2,6 @@
  * Plugin to validate forms
  * @author Alvaro José Agámez Licha, Johann Paul Echavarría Zapata
  */
-
-/*Begin of Array.indexOf definition for IE<9
-https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/IndexOf#Compatibility
-*/ 
-if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
-        "use strict";
-        if (this == null) {
-            throw new TypeError();
-        }
-        var t = Object(this);
-        var len = t.length >>> 0;
-        if (len === 0) {
-            return -1;
-        }
-        var n = 0;
-        if (arguments.length > 1) {
-            n = Number(arguments[1]);
-            if (n != n) { // shortcut for verifying if it's NaN
-                n = 0;
-            } else if (n != 0 && n != Infinity && n != -Infinity) {
-                n = (n > 0 || -1) * Math.floor(Math.abs(n));
-            }
-        }
-        if (n >= len) {
-            return -1;
-        }
-        var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
-        for (; k < len; k++) {
-            if (k in t && t[k] === searchElement) {
-                return k;
-            }
-        }
-        return -1;
-    }
-}
-/*End of Array.indexOf definition*/ 
- 
 (function ($) {
     'use strict';
 
@@ -59,7 +21,8 @@ if (!Array.prototype.indexOf) {
          * The required validation match with every other, then we don't need
          * worry about it
          */
-        var index = dataValidations.indexOf('required');
+//        var index = dataValidations.indexOf('required');
+        var index = $.inArray('required', dataValidations);
         var head = dataValidations.slice(0, index);
         var tail = dataValidations.slice(index + 1);
         dataValidations = head.concat(tail);
@@ -68,13 +31,29 @@ if (!Array.prototype.indexOf) {
         var pivot = dataValidations.shift();
         if (dataValidations.length > 0) {
             for (var index = 0; index < dataValidations.length; index++) {
-                if (-1 === validationMap[pivot].indexOf(dataValidations[index])) {
+//                if (-1 === validationMap[pivot].indexOf(dataValidations[index])) {
+                if (-1 === $.inArray(dataValidations[index], validationMap[pivot])) {
                     return false;
                 }
             }
         }
 
         return true;
+    }
+
+    /**
+     * 
+     * @param {Aarray} validations
+     * @returns {Array}
+     */
+    function getValidationsArray(validations)
+    {
+        var result = [];
+        for (var index = 0; index < validations.length; index++) {
+            result.push(validations[index].name);
+        }
+    
+        return result;
     }
 
     /**
@@ -158,7 +137,7 @@ if (!Array.prototype.indexOf) {
      */
     function isValidEnum(element, params) {
 //        if (-1 === params.indexOf(element.value)) {
-        if (-1 === $(params).inArray(element.value, params)) {
+        if (-1 === $.inArray(element.value, params)) {
             showError(element, 'enum');
             return false;
         }
@@ -293,7 +272,8 @@ if (!Array.prototype.indexOf) {
         var parsed = [];
 
         $(validations).each(function(index, validation) {
-            var beginIndex = validation.indexOf('[');
+//            var beginIndex = validation.indexOf('[');
+            var beginIndex = $.inArray('[', validation);
             if (-1 !== beginIndex) {
                 var endIndex = validation.lastIndexOf(']');
 
@@ -338,7 +318,7 @@ if (!Array.prototype.indexOf) {
             if (validations[index].name === value) {
                 return index;
             }
-        };
+        }
 
         return -1;
     }
@@ -445,59 +425,57 @@ if (!Array.prototype.indexOf) {
                     dataValidations = parseValidations(dataValidations);
 
 //                    if (false !== dataValidations 
-//                        && !checkValidations(dataValidations.validations)
-//                    ) {
-//                        showError(element, 'wrongValidationsConfig');
-//                    }
+                    if (!checkValidations(getValidationsArray(dataValidations))) {
+                        showError(element, 'wrongValidationsConfig');
+                    }
 
                     $(dataValidations).each(function (index, validation) {
                         var isRequired = searchValidation("required", dataValidations);
-//                        var errorType = validation.name;
 
                         switch (validation.name) {
                             case "alnum":
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = errorFlag && isValidAlnum(element);
+                                    errorFlag = isValidAlnum(element) && errorFlag;
                                 }
                                 break;
 
                             case "alpha":
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = errorFlag && isValidAlpha(element);
+                                    errorFlag = isValidAlpha(element) && errorFlag;
                                 }
                                 break;
 
                             case "email": 
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = errorFlag && isValidEmail(element);
+                                    errorFlag = isValidEmail(element) && errorFlag;
                                 }
                                 break;
 
                             case "enum":
                                 if (-1 !== isRequired || "" !== element.value) {
                                     if (Array.isArray(validation.params)) {
-                                        errorFlag = errorFlag && isValidEnum(element, validation.params);
+                                        errorFlag = isValidEnum(element, validation.params);
                                     } else {
-                                        errorType = "enumParams";
+                                        showError(element, "enumParams");
                                     }
                                 }
                                 break;
 
                             case "integer":
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = errorFlag && isValidInteger(element);
+                                    errorFlag = isValidInteger(element) && errorFlag;
                                 }
                                 break;
 
                             case "number":
                                 if (-1 !== isRequired || "" !== element.value ) {
-                                    errorFlag = errorFlag && isValidNumber(element);
+                                    errorFlag = isValidNumber(element) && errorFlag;
                                 }
                                 break;
 
                             case "range":
                                 if (-1 !== isRequired || "" !== element.value ) {
-                                    errorFlag = errorFlag && isValidRange(
+                                    errorFlag = isValidRange(
                                         element, 
                                         validation.params[0], 
                                         validation.params[1]
@@ -507,13 +485,13 @@ if (!Array.prototype.indexOf) {
 
                             case "regex":
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = errorFlag && isValidRegex(element, validation.params);
+                                    errorFlag = isValidRegex(element, validation.params) && errorFlag;
                                 }
                                 break;
 
                             case "required":
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = errorFlag && isValidRequired(element);
+                                    errorFlag = isValidRequired(element) && errorFlag;
                                 }                                                            
                                 break;
 
@@ -521,10 +499,6 @@ if (!Array.prototype.indexOf) {
                                 // TODO: Do something
                                 break;
                         }
-
-//                        if (!errorFlag) {
-//                            showError(element, errorType);
-//                        }
                     });
                 });
 
