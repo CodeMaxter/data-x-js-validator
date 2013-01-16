@@ -98,7 +98,7 @@ if (!Array.prototype.indexOf) {
 
         try {
             if (!pattern.test(element.value)) {
-//                showError(element, 'alnum');
+                showError(element, 'alnum');
                 return false;
             }
 
@@ -119,7 +119,7 @@ if (!Array.prototype.indexOf) {
 
         try {
             if (!pattern.test(element.value)) {
-//                showError(element, 'alpha');
+                showError(element, 'alpha');
                 return false;
             }
 
@@ -140,7 +140,7 @@ if (!Array.prototype.indexOf) {
 
         try {
             if (!pattern.test(element.value)) {
-//                showError(element, 'email');
+                showError(element, 'email');
                 return false;
             }
 
@@ -157,7 +157,9 @@ if (!Array.prototype.indexOf) {
      * @returns {bollean}
      */
     function isValidEnum(element, params) {
-        if (-1 === params.indexOf(element.value)) {
+//        if (-1 === params.indexOf(element.value)) {
+        if (-1 === $(params).inArray(element.value, params)) {
+            showError(element, 'enum');
             return false;
         }
 
@@ -176,7 +178,7 @@ if (!Array.prototype.indexOf) {
         }
 
         if (0 !== element.value % 1) {
-//            showError(element, 'integer');
+            showError(element, 'integer');
             return false;
         }
 
@@ -191,7 +193,7 @@ if (!Array.prototype.indexOf) {
      */
     function isValidNumber(element) {
         if (isNaN(parseFloat(element.value)) && isFinite(element.value)) {
-//            showError(element, 'number');
+            showError(element, 'number');
             return false;
         }
 
@@ -209,6 +211,7 @@ if (!Array.prototype.indexOf) {
     {
         // TODO Validar que min y max sean enteros
         if (element.value < min || element.value > max) {
+            showError(element, 'range');
             return false;
         }
     
@@ -225,6 +228,7 @@ if (!Array.prototype.indexOf) {
         var regExp = new RegExp(expresion);
 
         if (!regExp.test(element.value)) {
+            showError(element, 'regex');
             return false;
         }
 
@@ -273,9 +277,9 @@ if (!Array.prototype.indexOf) {
                 break;
         }
 
-//        if (!errorFlag) {
-//            showError(element, 'required');
-//        }
+        if (!errorFlag) {
+            showError(element, 'required');
+        }
 
         return errorFlag;
     }
@@ -448,31 +452,31 @@ if (!Array.prototype.indexOf) {
 
                     $(dataValidations).each(function (index, validation) {
                         var isRequired = searchValidation("required", dataValidations);
-                        var errorType = validation.name;
+//                        var errorType = validation.name;
 
                         switch (validation.name) {
                             case "alnum":
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidAlnum(element);
+                                    errorFlag = errorFlag && isValidAlnum(element);
                                 }
                                 break;
 
                             case "alpha":
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidAlpha(element);
+                                    errorFlag = errorFlag && isValidAlpha(element);
                                 }
                                 break;
 
                             case "email": 
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidEmail(element);
+                                    errorFlag = errorFlag && isValidEmail(element);
                                 }
                                 break;
 
                             case "enum":
                                 if (-1 !== isRequired || "" !== element.value) {
                                     if (Array.isArray(validation.params)) {
-                                        errorFlag = isValidEnum(element, validation.params);
+                                        errorFlag = errorFlag && isValidEnum(element, validation.params);
                                     } else {
                                         errorType = "enumParams";
                                     }
@@ -481,19 +485,19 @@ if (!Array.prototype.indexOf) {
 
                             case "integer":
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidInteger(element);
+                                    errorFlag = errorFlag && isValidInteger(element);
                                 }
                                 break;
 
                             case "number":
                                 if (-1 !== isRequired || "" !== element.value ) {
-                                    errorFlag = isValidNumber(element);
+                                    errorFlag = errorFlag && isValidNumber(element);
                                 }
                                 break;
 
                             case "range":
                                 if (-1 !== isRequired || "" !== element.value ) {
-                                    errorFlag = isValidRange(
+                                    errorFlag = errorFlag && isValidRange(
                                         element, 
                                         validation.params[0], 
                                         validation.params[1]
@@ -503,13 +507,13 @@ if (!Array.prototype.indexOf) {
 
                             case "regex":
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidRegex(element, validation.params);
+                                    errorFlag = errorFlag && isValidRegex(element, validation.params);
                                 }
                                 break;
 
                             case "required":
                                 if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidRequired(element);
+                                    errorFlag = errorFlag && isValidRequired(element);
                                 }                                                            
                                 break;
 
@@ -518,9 +522,9 @@ if (!Array.prototype.indexOf) {
                                 break;
                         }
 
-                        if (!errorFlag) {
-                            showError(element, errorType);
-                        }
+//                        if (!errorFlag) {
+//                            showError(element, errorType);
+//                        }
                     });
                 });
 
