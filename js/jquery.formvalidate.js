@@ -390,6 +390,9 @@
             case "field-top":
                 $("<div class='errorMessage'>"+errorMess+"</div>").insertBefore($(element)).show(1200);
                 break;
+            case "icon":
+                $("<img/>", {"src": "img/exclamation.png"}).insertAfter(element);
+                break;
             case "summary-top":
                 break;
             case "summary-bottom":
@@ -397,7 +400,8 @@
         }
 
         $(element).data("errorMessage", errorMess);
-        $(element).css({"border": "2px solid red"});
+//        $(element).css({"border": "2px solid red"});
+        $(element).addClass("form-invalid-field");
     }
 
     $.fn.formValidate = function(options) {
@@ -498,6 +502,10 @@
                             default:
                                 // TODO: Do something
                                 break;
+                        }
+
+                        if (!errorFlag) {
+                            return false;
                         }
                     });
                 });

@@ -11,3 +11,12 @@
     margin-left: 10px;
     display: none;
 }
+
+.form-invalid-field {
+    background-color: white;
+    background-image: url("../img/invalid_line.gif");
+    background-position: center bottom;
+    background-repeat: repeat-x;
+    border-color: #CC3300;
+    border: 1px solid red;
+}
