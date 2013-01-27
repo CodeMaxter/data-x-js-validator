@@ -391,7 +391,7 @@
                 $("<div class='errorMessage'>"+errorMess+"</div>").insertBefore($(element)).show(1200);
                 break;
             case "icon":
-                $("<img/>", {"src": "img/exclamation.png"}).insertAfter(element);
+                $("<img/>", {"src": "img/exclamation.png", "class": "form-invalid-icon"}).insertAfter(element);
                 break;
             case "summary-top":
                 break;
