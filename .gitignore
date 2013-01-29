@@ -2,6 +2,7 @@
 ## Netbeans
 #################
 nbproject/*.*
+nbproject/private/*.*
 
 #################
 ## Eclipse

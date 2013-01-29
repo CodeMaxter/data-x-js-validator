@@ -1,6 +1,6 @@
 /* 
  * Plugin to validate forms
- * @author Alvaro José Agámez Licha, Johann Paul Echavarría Zapata
+ * @author Alvaro JosÃ© AgÃ¡mez Licha, Johann Paul EchavarrÃ­a Zapata
  */
 (function ($) {
     'use strict';
@@ -331,67 +331,78 @@
      * @returns {void}
      */
     function showError(element, type) {
-        var errorMess;
+        // If a field has an error message, then it is not necessary to add another
+        if ($(element).parent(":has(span.form-invalid-message)").length > 0) {
+            return false;
+        }
+
+        var errorMessage;
     
         switch (type) {
             case "wrongValidationsConfig":
-                errorMess = ATTRIBUTES_IN_CONFLICT;
+                errorMessage = ATTRIBUTES_IN_CONFLICT;
                 break;
             case "alnum":
-                errorMess = ALPHANUMERIC_MESSAGE;
+                errorMessage = ALPHANUMERIC_MESSAGE;
                 break;
             case "alpha":
-                errorMess = ALPHABETICAL_MESSAGE;
+                errorMessage = ALPHABETICAL_MESSAGE;
                 break;
             case "email":
-                errorMess = EMAIL_MESSAGE;
+                errorMessage = EMAIL_MESSAGE;
                 break;
             case "enum":
-                errorMess = ENUM_MESSAGE;
+                errorMessage = ENUM_MESSAGE;
                 break;
             case "enumParams":
-                errorMess = ENUM_PARAMS_MESSAGE;
+                errorMessage = ENUM_PARAMS_MESSAGE;
                 break;
             case "integer":
-                errorMess = INTEGER_MESSAGE;
+                errorMessage = INTEGER_MESSAGE;
                 break;
             case "number":
-                errorMess = NUMBER_MESSAGE;
+                errorMessage = NUMBER_MESSAGE;
                 break;
             case "range":
-                errorMess = RANGE_MESSAGE;
+                errorMessage = RANGE_MESSAGE;
                 break;
             case "regex":
-                errorMess = REGEX_MESSAGE;
+                errorMessage = REGEX_MESSAGE;
                 break;
             case "required":
-                errorMess = REQUIRED_MESSAGE;
+                errorMessage = REQUIRED_MESSAGE;
                 break;
         }
         
-        if (undefined !== $(element).data(".errorMessage") 
-            || "" !== $(element).data(".errorMessage")
-        ) {
+//        if (undefined !== $(element).data(".errorMessage") 
+//            || "" !== $(element).data(".errorMessage")
+//        ) {
         //alert("sal");
         //return false;
-        }
+//        }
 
         switch ($(element.form).attr("data-validation")) {
             case "field-left":
-                $("<span class='errorMessage'>"+errorMess+"</span>").insertBefore($(element)).show(1200);
+                $("<span/>", {"class": "form-invalid-message", "text": errorMessage}).insertBefore(element).show(1200);
                  break;
             case "field-right":
-                //$(element).after("<span class='errorMessage'>No pasó validación</span>").hide().fadeIn("slow");
-                $("<span class='errorMessage'>"+errorMess+"</span>").insertAfter($(element)).show(1200);
+                $("<span/>", {
+                    "class": "form-invalid-message", 
+                    "text": errorMessage
+                }).insertAfter($(":input[name=" + element.name + "]:last-child")).show(1200);
                 break;		
             case "field-bottom":
-                $("<div class='errorMessage'>"+errorMess+"</div>").insertAfter($(element)).show(1200);
+                $("<div/>", {"class": "form-invalid-message", "text": errorMessage}).insertAfter(element).show(1200);
                  break;
             case "field-top":
-                $("<div class='errorMessage'>"+errorMess+"</div>").insertBefore($(element)).show(1200);
+                $("<div/>", {"class": "form-invalid-message", "text": errorMessage}).insertBefore(element).show(1200);
                 break;
             case "icon":
-                $("<img/>", {"src": "img/exclamation.png", "class": "form-invalid-icon"}).insertAfter(element);
+                $("<img/>", {
+                    "src": "img/exclamation.png", 
+                    "class": "form-invalid-icon",
+                    "title": errorMessage
+                }).insertAfter($(":input[name=" + element.name + "]:last-child"));
                 break;
             case "summary-top":
                 break;
@@ -399,8 +410,7 @@
                 break;		
         }
 
-        $(element).data("errorMessage", errorMess);
-//        $(element).css({"border": "2px solid red"});
+        $(element).data("errorMessage", errorMessage);
         $(element).addClass("form-invalid-field");
     }
 
@@ -418,14 +428,14 @@
             }
 
             form.submit(function() {
-                $(".errorMessage").remove(); /*hide error messages*/
+                $(".form-invalid-message").remove(); /*hide error messages*/
                 var errorFlag = true;
 
                 $(":input[data-validation]", this).each(function(index, element) {
                     // Remove the error css attributes o class
                     hideError(element);
 
-                    var dataValidations = $(element).attr('data-validation').split(' ');
+                    var dataValidations = $.trim($(element).attr('data-validation')).split(' ');
                     dataValidations = parseValidations(dataValidations);
 
 //                    if (false !== dataValidations 
