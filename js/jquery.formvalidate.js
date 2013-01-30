@@ -397,7 +397,7 @@
             case "field-top":
                 $("<div/>", {"class": "form-invalid-message", "text": errorMessage}).insertBefore(element).show(1200);
                 break;
-            case "icon":
+            case "field-icon":
                 $("<img/>", {
                     "src": "img/exclamation.png", 
                     "class": "form-invalid-icon",
@@ -428,8 +428,12 @@
             }
 
             form.submit(function() {
-                $(".form-invalid-message").remove(); /*hide error messages*/
                 var errorFlag = true;
+
+                // Hide error messages
+                $(".form-invalid-message").remove();
+                $(".form-invalid-icon").remove();
+                $(".form-invalid-field").removeClass("form-invalid-field");
 
                 $(":input[data-validation]", this).each(function(index, element) {
                     // Remove the error css attributes o class
