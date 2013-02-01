@@ -336,43 +336,43 @@
             return false;
         }
 
-        var errorMessage;
+//        var errorMessage;
     
-        switch (type) {
-            case "wrongValidationsConfig":
-                errorMessage = ATTRIBUTES_IN_CONFLICT;
-                break;
-            case "alnum":
-                errorMessage = ALPHANUMERIC_MESSAGE;
-                break;
-            case "alpha":
-                errorMessage = ALPHABETICAL_MESSAGE;
-                break;
-            case "email":
-                errorMessage = EMAIL_MESSAGE;
-                break;
-            case "enum":
-                errorMessage = ENUM_MESSAGE;
-                break;
-            case "enumParams":
-                errorMessage = ENUM_PARAMS_MESSAGE;
-                break;
-            case "integer":
-                errorMessage = INTEGER_MESSAGE;
-                break;
-            case "number":
-                errorMessage = NUMBER_MESSAGE;
-                break;
-            case "range":
-                errorMessage = RANGE_MESSAGE;
-                break;
-            case "regex":
-                errorMessage = REGEX_MESSAGE;
-                break;
-            case "required":
-                errorMessage = REQUIRED_MESSAGE;
-                break;
-        }
+//        switch (type) {
+//            case "wrongValidationsConfig":
+//                errorMessage = ATTRIBUTES_IN_CONFLICT;
+//                break;
+//            case "alnum":
+//                errorMessage = ALPHANUMERIC_MESSAGE;
+//                break;
+//            case "alpha":
+//                errorMessage = ALPHABETICAL_MESSAGE;
+//                break;
+//            case "email":
+//                errorMessage = EMAIL_MESSAGE;
+//                break;
+//            case "enum":
+//                errorMessage = ENUM_MESSAGE;
+//                break;
+//            case "enumParams":
+//                errorMessage = ENUM_PARAMS_MESSAGE;
+//                break;
+//            case "integer":
+//                errorMessage = INTEGER_MESSAGE;
+//                break;
+//            case "number":
+//                errorMessage = NUMBER_MESSAGE;
+//                break;
+//            case "range":
+//                errorMessage = RANGE_MESSAGE;
+//                break;
+//            case "regex":
+//                errorMessage = REGEX_MESSAGE;
+//                break;
+//            case "required":
+//                errorMessage = REQUIRED_MESSAGE;
+//                break;
+//        }
         
 //        if (undefined !== $(element).data(".errorMessage") 
 //            || "" !== $(element).data(".errorMessage")
@@ -380,6 +380,8 @@
         //alert("sal");
         //return false;
 //        }
+
+        var errorMessage = i18n[type];
 
         switch ($(element.form).attr("data-validation")) {
             case "field-left":
@@ -401,8 +403,10 @@
                 $("<img/>", {
                     "src": "img/exclamation.png", 
                     "class": "form-invalid-icon",
-                    "title": errorMessage
+//                    "title": errorMessage
                 }).insertAfter($(":input[name=" + element.name + "]:last-child"));
+
+//                $("<div/>")
                 break;
             case "summary-top":
                 break;
@@ -444,7 +448,7 @@
 
 //                    if (false !== dataValidations 
                     if (!checkValidations(getValidationsArray(dataValidations))) {
-                        showError(element, 'wrongValidationsConfig');
+                        showError(element, 'attributesInConflict');
                     }
 
                     $(dataValidations).each(function (index, validation) {

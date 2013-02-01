@@ -1,8 +1,8 @@
-.form-invalid-message {
+/*.form-invalid-message {
     background: #FBE3E4;
     color: #8A1F11;
     border-color: #FBC2C4;
-    /*padding: 0.8em;*/
+    padding: 0.8em;
     margin-bottom: 1em;
     border: 2px solid #DDD;
     height: 20px;
@@ -10,6 +10,30 @@
     padding-left: 10px;
     margin-left: 10px;
     display: none;
+}*/
+
+.form-invalid-message {
+    background-color: #CE5454;
+    border-radius: 3px;
+    color: #FFFFFF;
+    margin: 0 0 0 20px;
+    padding: 3px 10px;
+    position: relative;
+    white-space: pre;
+    z-index: 1;
+}
+
+.form-invalid-message:after {
+    border-color: transparent #CE5454 transparent transparent;
+    border-style: solid;
+    border-width: 11px 6px;
+    content: "";
+    display: block;
+    height: 0;
+    left: -12px;
+    position: absolute;
+    top: 1px;
+    width: 0;
 }
 
 .form-invalid-field {
@@ -25,3 +49,56 @@
     margin-left: 2px;
     vertical-align: middle;
 }
+
+.form-invalid-tooltip {
+    float:left; 
+    top:2px; 
+    left:7px; 
+    position:relative; 
+    z-index:2;
+}
+
+.form-invalid-tooltip:hover {
+    z-index:3;
+}
+
+.form-invalid-tooltip .content {
+    opacity: 0; 
+    width: 200px; 
+    background-color: #333; 
+    color:#FFF; 
+    font-size: 0.9em;
+    position: absolute;
+    top: 0;
+    left: 20px;
+    padding: 8px;
+    border-radius: 6px;
+    pointer-events: none;
+    transition: 0.2s cubic-bezier(0.1, 0.1, 0.25, 2);
+    -webkit-transition: 0.3s cubic-bezier(0.1, 0.2, 0.5, 2.2);
+    -moz-transition: 0.3s cubic-bezier(0.1, 0.2, 0.5, 2.2);
+}
+
+.form-invalid-tooltip p {
+    padding:0;
+}
+
+.tooltip.down .content{ left:auto; right:0; top:30px; }
+
+.form-invalid-tooltip:hover .content
+{
+    opacity: 1;
+    left:36px;
+}
+
+.form-invalid-tooltip .content b {
+    height: 0;
+    width: 0;
+    border-color: #333 #333 transparent transparent;
+    border-style: solid;
+    border-width: 9px 7px;
+    position: absolute;
+    left: -14px;
+    top: 8px;
+}
+.tooltip.down .content b{ left:auto; right:6px; top:-10px; border-width:5px; border-color:transparent #333 #333 transparent; }
