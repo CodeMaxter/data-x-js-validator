@@ -63,7 +63,8 @@
      * @returns {void}
      */
     function hideError(element) {
-        $(element).css({"border": ''});        
+//        $(element).css({"border": ''});        
+        $(element).removeClass("form-invalid-field")
     }
 
     /**
@@ -392,6 +393,7 @@
                     "class": "form-invalid-message", 
                     "text": errorMessage
                 }).insertAfter($(":input[name=" + element.name + "]:last-child")).show(1200);
+
                 break;		
             case "field-bottom":
                 $("<div/>", {"class": "form-invalid-message", "text": errorMessage}).insertAfter(element).show(1200);
@@ -400,13 +402,24 @@
                 $("<div/>", {"class": "form-invalid-message", "text": errorMessage}).insertBefore(element).show(1200);
                 break;
             case "field-icon":
-                $("<img/>", {
-                    "src": "img/exclamation.png", 
-                    "class": "form-invalid-icon",
-//                    "title": errorMessage
-                }).insertAfter($(":input[name=" + element.name + "]:last-child"));
+//                $("<img/>", {
+//                    "src": "img/exclamation.png", 
+//                    "class": "form-invalid-icon",
+////                    "title": errorMessage
+//                }).insertAfter($(":input[name=" + element.name + "]:last-child"));
 
-//                $("<div/>")
+                $("<div/>", {"class": "form-invalid-tooltip"})
+                    .append($("<img/>", {
+                        "src": "img/exclamation.png", 
+                        "class": "form-invalid-icon",
+                    }))
+                    .append(
+                        $("<div/>", {"class": "form-invalid-tooltip-content"})
+                            .append($("<b/>"))
+                            .append($("<p/>", {"text": errorMessage}))
+                    )
+                    .insertAfter($(":input[name=" + element.name + "]:last-child"));
+
                 break;
             case "summary-top":
                 break;

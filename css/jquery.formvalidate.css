@@ -41,8 +41,12 @@
     background-image: url("../img/invalid_line.gif");
     background-position: center bottom;
     background-repeat: repeat-x;
-    border-color: #CC3300;
-    border: 1px solid red;
+    /*border-color: #CC3300;*/
+    /*border: 1px solid red;*/
+    border-style: solid;
+    border-color: red;
+    border-width: 1px;
+    padding: 2px;
 }
 
 .form-invalid-icon {
@@ -51,22 +55,22 @@
 }
 
 .form-invalid-tooltip {
-    float:left; 
-    top:2px; 
-    left:7px; 
-    position:relative; 
-    z-index:2;
+    display: inline;
+    position: relative;
+    width: 100px;
+    z-index: 2;
 }
 
 .form-invalid-tooltip:hover {
-    z-index:3;
+    cursor: help;
+    z-index: 3;
 }
 
-.form-invalid-tooltip .content {
+.form-invalid-tooltip .form-invalid-tooltip-content {
     opacity: 0; 
     width: 200px; 
     background-color: #333; 
-    color:#FFF; 
+    color: #FFF; 
     font-size: 0.9em;
     position: absolute;
     top: 0;
@@ -74,24 +78,29 @@
     padding: 8px;
     border-radius: 6px;
     pointer-events: none;
-    transition: 0.2s cubic-bezier(0.1, 0.1, 0.25, 2);
+/*    transition: 0.2s cubic-bezier(0.1, 0.1, 0.25, 2);
     -webkit-transition: 0.3s cubic-bezier(0.1, 0.2, 0.5, 2.2);
-    -moz-transition: 0.3s cubic-bezier(0.1, 0.2, 0.5, 2.2);
+    -moz-transition: 0.3s cubic-bezier(0.1, 0.2, 0.5, 2.2);*/
 }
 
 .form-invalid-tooltip p {
-    padding:0;
+    border: 0;
+    margin: 0;
+    padding: 0;
 }
 
-.tooltip.down .content{ left:auto; right:0; top:30px; }
+/*.tooltip.down .content {
+    left: auto;
+    right: 0;
+    top: 30px;
+}*/
 
-.form-invalid-tooltip:hover .content
-{
+.form-invalid-tooltip:hover .form-invalid-tooltip-content {
     opacity: 1;
-    left:36px;
+    left: 36px;
 }
 
-.form-invalid-tooltip .content b {
+.form-invalid-tooltip .form-invalid-tooltip-content b {
     height: 0;
     width: 0;
     border-color: #333 #333 transparent transparent;
@@ -101,4 +110,4 @@
     left: -14px;
     top: 8px;
 }
-.tooltip.down .content b{ left:auto; right:6px; top:-10px; border-width:5px; border-color:transparent #333 #333 transparent; }
+/*.tooltip.down .content b{ left:auto; right:6px; top:-10px; border-width:5px; border-color:transparent #333 #333 transparent; }*/

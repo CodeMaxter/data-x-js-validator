@@ -1,0 +1,16 @@
+/* 
+    Document   : form
+    Created on : 04-feb-2013, 19:23:18
+    Author     : AlvaroJose
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+form label { 
+    float: left;
+    width: 6em;
+}
+
+form div {
+    margin-bottom: 2px;
+}
