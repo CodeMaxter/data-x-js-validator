@@ -64,7 +64,9 @@
      */
     function hideError(element) {
 //        $(element).css({"border": ''});        
-        $(element).removeClass("form-invalid-field")
+        $(element).removeClass("form-invalid-field");
+        $(element).next(".form-invalid-message").remove();
+        $(element).next(".form-invalid-tooltip").remove();
     }
 
     /**
@@ -337,51 +339,6 @@
             return false;
         }
 
-//        var errorMessage;
-    
-//        switch (type) {
-//            case "wrongValidationsConfig":
-//                errorMessage = ATTRIBUTES_IN_CONFLICT;
-//                break;
-//            case "alnum":
-//                errorMessage = ALPHANUMERIC_MESSAGE;
-//                break;
-//            case "alpha":
-//                errorMessage = ALPHABETICAL_MESSAGE;
-//                break;
-//            case "email":
-//                errorMessage = EMAIL_MESSAGE;
-//                break;
-//            case "enum":
-//                errorMessage = ENUM_MESSAGE;
-//                break;
-//            case "enumParams":
-//                errorMessage = ENUM_PARAMS_MESSAGE;
-//                break;
-//            case "integer":
-//                errorMessage = INTEGER_MESSAGE;
-//                break;
-//            case "number":
-//                errorMessage = NUMBER_MESSAGE;
-//                break;
-//            case "range":
-//                errorMessage = RANGE_MESSAGE;
-//                break;
-//            case "regex":
-//                errorMessage = REGEX_MESSAGE;
-//                break;
-//            case "required":
-//                errorMessage = REQUIRED_MESSAGE;
-//                break;
-//        }
-        
-//        if (undefined !== $(element).data(".errorMessage") 
-//            || "" !== $(element).data(".errorMessage")
-//        ) {
-        //alert("sal");
-        //return false;
-//        }
-
         var errorMessage = i18n[type];
 
         switch ($(element.form).attr("data-validation")) {
@@ -416,7 +373,7 @@
                     .append(
                         $("<div/>", {"class": "form-invalid-tooltip-content"})
                             .append($("<b/>"))
-                            .append($("<p/>", {"text": errorMessage}))
+                            .append($("<span/>", {"text": errorMessage}))
                     )
                     .insertAfter($(":input[name=" + element.name + "]:last-child"));
 
@@ -429,6 +386,100 @@
 
         $(element).data("errorMessage", errorMessage);
         $(element).addClass("form-invalid-field");
+    }
+
+    /**
+     * 
+     * @param {DOMElelement} element
+     * @returns {boolean}
+     */
+    function validateField(element) {
+        var errorFlag = true;
+
+        var dataValidations = $.trim($(element).attr('data-validation')).split(' ');
+        dataValidations = parseValidations(dataValidations);
+
+        if (!checkValidations(getValidationsArray(dataValidations))) {
+            showError(element, 'attributesInConflict');
+        }
+
+        $(dataValidations).each(function (index, validation) {
+            var isRequired = searchValidation("required", dataValidations);
+
+            switch (validation.name) {
+                case "alnum":
+                    if (-1 !== isRequired || "" !== element.value) {
+                        errorFlag = isValidAlnum(element) && errorFlag;
+                    }
+                    break;
+
+                case "alpha":
+                    if (-1 !== isRequired || "" !== element.value) {
+                        errorFlag = isValidAlpha(element) && errorFlag;
+                    }
+                    break;
+
+                case "email": 
+                    if (-1 !== isRequired || "" !== element.value) {
+                        errorFlag = isValidEmail(element) && errorFlag;
+                    }
+                    break;
+
+                case "enum":
+                    if (-1 !== isRequired || "" !== element.value) {
+                        if (Array.isArray(validation.params)) {
+                            errorFlag = isValidEnum(element, validation.params) && errorFlag;
+                        } else {
+                            showError(element, "enumParams");
+                        }
+                    }
+                    break;
+
+                case "integer":
+                    if (-1 !== isRequired || "" !== element.value) {
+                        errorFlag = isValidInteger(element) && errorFlag;
+                    }
+                    break;
+
+                case "number":
+                    if (-1 !== isRequired || "" !== element.value ) {
+                        errorFlag = isValidNumber(element) && errorFlag;
+                    }
+                    break;
+
+                case "range":
+                    if (-1 !== isRequired || "" !== element.value ) {
+                        errorFlag = isValidRange(
+                            element, 
+                            validation.params[0], 
+                            validation.params[1]
+                        ) && errorFlag;
+                    }
+                    break;
+
+                case "regex":
+                    if (-1 !== isRequired || "" !== element.value) {
+                        errorFlag = isValidRegex(element, validation.params) && errorFlag;
+                    }
+                    break;
+
+                case "required":
+                    if (-1 !== isRequired || "" !== element.value) {
+                        errorFlag = isValidRequired(element) && errorFlag;
+                    }                                                            
+                    break;
+
+                default:
+                    // TODO: Do something
+                    break;
+            }
+
+            if (!errorFlag) {
+                return false;
+            }
+        });
+
+        return errorFlag;
     }
 
     $.fn.formValidate = function(options) {
@@ -444,7 +495,7 @@
                 return;
             }
 
-            form.submit(function() {
+            form.submit(function(event) {
                 var errorFlag = true;
 
                 // Hide error messages
@@ -456,89 +507,99 @@
                     // Remove the error css attributes o class
                     hideError(element);
 
-                    var dataValidations = $.trim($(element).attr('data-validation')).split(' ');
-                    dataValidations = parseValidations(dataValidations);
-
-//                    if (false !== dataValidations 
-                    if (!checkValidations(getValidationsArray(dataValidations))) {
-                        showError(element, 'attributesInConflict');
-                    }
-
-                    $(dataValidations).each(function (index, validation) {
-                        var isRequired = searchValidation("required", dataValidations);
-
-                        switch (validation.name) {
-                            case "alnum":
-                                if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidAlnum(element) && errorFlag;
-                                }
-                                break;
-
-                            case "alpha":
-                                if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidAlpha(element) && errorFlag;
-                                }
-                                break;
-
-                            case "email": 
-                                if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidEmail(element) && errorFlag;
-                                }
-                                break;
-
-                            case "enum":
-                                if (-1 !== isRequired || "" !== element.value) {
-                                    if (Array.isArray(validation.params)) {
-                                        errorFlag = isValidEnum(element, validation.params);
-                                    } else {
-                                        showError(element, "enumParams");
-                                    }
-                                }
-                                break;
-
-                            case "integer":
-                                if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidInteger(element) && errorFlag;
-                                }
-                                break;
-
-                            case "number":
-                                if (-1 !== isRequired || "" !== element.value ) {
-                                    errorFlag = isValidNumber(element) && errorFlag;
-                                }
-                                break;
-
-                            case "range":
-                                if (-1 !== isRequired || "" !== element.value ) {
-                                    errorFlag = isValidRange(
-                                        element, 
-                                        validation.params[0], 
-                                        validation.params[1]
-                                    );
-                                }
-                                break;
-
-                            case "regex":
-                                if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidRegex(element, validation.params) && errorFlag;
-                                }
-                                break;
-
-                            case "required":
-                                if (-1 !== isRequired || "" !== element.value) {
-                                    errorFlag = isValidRequired(element) && errorFlag;
-                                }                                                            
-                                break;
-
-                            default:
-                                // TODO: Do something
-                                break;
-                        }
-
-                        if (!errorFlag) {
-                            return false;
+                    errorFlag = validateField(element) && errorFlag;
+                    $(element).on("change, click", function() {
+                        if (!validateField(this)) {
+                            event.stopPropagation();
+                        } else {
+                            hideError(this);
                         }
                     });
+
+//                    var dataValidations = $.trim($(element).attr('data-validation')).split(' ');
+//                    dataValidations = parseValidations(dataValidations);
+//
+//                    if (!checkValidations(getValidationsArray(dataValidations))) {
+//                        showError(element, 'attributesInConflict');
+//                    }
+//
+//                    $(dataValidations).each(function (index, validation) {
+//                        var isRequired = searchValidation("required", dataValidations);
+//
+//                        switch (validation.name) {
+//                            case "alnum":
+//                                if (-1 !== isRequired || "" !== element.value) {
+//                                    errorFlag = isValidAlnum(element) && errorFlag;
+//                                }
+//                                break;
+//
+//                            case "alpha":
+//                                if (-1 !== isRequired || "" !== element.value) {
+//                                    errorFlag = isValidAlpha(element) && errorFlag;
+//                                }
+//                                break;
+//
+//                            case "email": 
+//                                if (-1 !== isRequired || "" !== element.value) {
+//                                    errorFlag = isValidEmail(element) && errorFlag;
+//                                }
+//                                break;
+//
+//                            case "enum":
+//                                if (-1 !== isRequired || "" !== element.value) {
+//                                    if (Array.isArray(validation.params)) {
+//                                        errorFlag = isValidEnum(element, validation.params);
+//                                    } else {
+//                                        showError(element, "enumParams");
+//                                    }
+//                                }
+//                                break;
+//
+//                            case "integer":
+//                                if (-1 !== isRequired || "" !== element.value) {
+//                                    errorFlag = isValidInteger(element) && errorFlag;
+//                                }
+//                                break;
+//
+//                            case "number":
+//                                if (-1 !== isRequired || "" !== element.value ) {
+//                                    errorFlag = isValidNumber(element) && errorFlag;
+//                                }
+//                                break;
+//
+//                            case "range":
+//                                if (-1 !== isRequired || "" !== element.value ) {
+//                                    errorFlag = isValidRange(
+//                                        element, 
+//                                        validation.params[0], 
+//                                        validation.params[1]
+//                                    ) && errorFlag;
+//                                }
+//                                break;
+//
+//                            case "regex":
+//                                if (-1 !== isRequired || "" !== element.value) {
+//                                    errorFlag = isValidRegex(element, validation.params) && errorFlag;
+//                                }
+//                                break;
+//
+//                            case "required":
+//                                if (-1 !== isRequired || "" !== element.value) {
+//                                    errorFlag = isValidRequired(element) && errorFlag;
+//                                }                                                            
+//                                break;
+//
+//                            default:
+//                                // TODO: Do something
+//                                break;
+//                        }
+//
+//                        if (!errorFlag) {
+//                            return false;
+//                        }
+//
+//                        return errorFlag;
+//                    });
                 });
 
                 return errorFlag;

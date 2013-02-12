@@ -10,7 +10,7 @@
     <body>
         <div id="dataValidationSummary"></div>
 
-        <form id="frmValidate" method="post" action="" data-validation="field-icon">
+        <form id="frmValidate" method="post" action="" data-validation="field-right">
             <div>
                 <label for="txtEnum">Enum</label>
                 <input type="text" name="txtEnum" id="txtEnum" data-validation="enum[1,2,3,4,5,hello,world] required " />
@@ -29,11 +29,11 @@
                 <span>Radio 02</span> <input type="radio" name="optRadio" value="radio02" />
             </div>
             <div>
-                <label for="txtText">Alnum</label>
+                <label for="txtAlnum">Alnum</label>
                 <input type="text" name="txtAlnum" id="txtAlnum" data-validation="required number alpha" />
             </div>
             <div>
-                <label for="txtText">Alpha</label>
+                <label for="txtAlpha">Alpha</label>
                 <input type="text" name="txtAlpha" id="txtAlpha" data-validation="alpha required enum number" />
             </div>
             <div>
@@ -45,7 +45,7 @@
                 <input type="text" name="txtEmail" id="txtEmail" data-validation="email" />
             </div>
             <div>
-                <label for="txtText">Password</label>
+                <label for="txtPassword">Password</label>
                 <input type="password" name="txtPassword" id="txtPassword" data-validation="required number" />
             </div>
             <div>
