@@ -42,6 +42,26 @@
     }
 
     /**
+     *
+     * @returns {String}
+     */
+    function generateId(stringLength) {
+        var chars = "_0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz",
+            id = '';
+
+        if (stringLength === undefined) {
+            stringLength = 8;
+        }
+
+        for (var index = 0; index < stringLength; index++) {
+            var randonNumber = Math.floor(Math.random() * chars.length);
+            id += chars.substring(randonNumber, randonNumber + 1);
+        }
+
+        return id;
+    }
+
+    /**
      * 
      * @param {Aarray} validations
      * @returns {Array}
@@ -65,8 +85,11 @@
     function hideError(element) {
 //        $(element).css({"border": ''});        
         $(element).removeClass("form-invalid-field");
-        $(element).next(".form-invalid-message").remove();
-        $(element).next(".form-invalid-tooltip").remove();
+//        $(element).next(".form-invalid-message").remove();
+//        $(":input[name=" + element.name + "]:last-child")
+//            .next(".form-invalid-message").remove();
+        $("#" + $(element).data("iconUniqueId")).remove();
+//        $(element).next(".form-invalid-tooltip").remove();
     }
 
     /**
@@ -136,7 +159,7 @@
      * 
      * @param {DOMElement} element
      * @param {Array} params
-     * @returns {bollean}
+     * @returns {Boolean}
      */
     function isValidEnum(element, params) {
 //        if (-1 === params.indexOf(element.value)) {
@@ -336,7 +359,7 @@
     function showError(element, type) {
         // If a field has an error message, then it is not necessary to add another
         if ($(element).parent(":has(span.form-invalid-message)").length > 0) {
-            return false;
+            return;
         }
 
         var errorMessage = i18n[type];
@@ -365,10 +388,11 @@
 ////                    "title": errorMessage
 //                }).insertAfter($(":input[name=" + element.name + "]:last-child"));
 
-                $("<div/>", {"class": "form-invalid-tooltip"})
+                var uniqueId = generateId();
+                $("<div/>", {"class": "form-invalid-tooltip", "id": uniqueId})
                     .append($("<img/>", {
                         "src": "img/exclamation.png", 
-                        "class": "form-invalid-icon",
+                        "class": "form-invalid-icon"
                     }))
                     .append(
                         $("<div/>", {"class": "form-invalid-tooltip-content"})
@@ -384,7 +408,12 @@
                 break;		
         }
 
+//        $(element).removeData();
         $(element).data("errorMessage", errorMessage);
+        if (undefined === $(':input[name="' + element.name + '"]', element.form).data("iconUniqueId")) {
+//            $(element).data("iconUniqueId", uniqueId);
+            $(':input[name="' + element.name + '"]', element.form).data("iconUniqueId", uniqueId);
+        }
         $(element).addClass("form-invalid-field");
     }
 
@@ -508,9 +537,14 @@
                     hideError(element);
 
                     errorFlag = validateField(element) && errorFlag;
-                    $(element).on("change, click", function() {
+
+                    // Validate single element
+//                    $(element).on("change click", function(event) {
+                    $(':input[name="' + element.name + '"]', element.form).on("change click", function(event) {
                         if (!validateField(this)) {
+                            // Cancel form submit 
                             event.stopPropagation();
+                            showError(this);
                         } else {
                             hideError(this);
                         }
