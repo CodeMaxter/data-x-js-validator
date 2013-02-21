@@ -88,7 +88,15 @@
 //        $(element).next(".form-invalid-message").remove();
 //        $(":input[name=" + element.name + "]:last-child")
 //            .next(".form-invalid-message").remove();
-        $("#" + $(element).data("iconUniqueId")).remove();
+        if ('radio' === element.type || 'checkbox' === element.type) {
+            var iconUniqueId = $(":input[name=" + element.name + "]").first().data("iconUniqueId");
+            $(":input[name=" + element.name + "]").first().removeData();
+        } else {
+            var iconUniqueId = $(element).data("iconUniqueId");
+            $(element).removeData();
+        }
+
+        $("#" + iconUniqueId).remove();
 //        $(element).next(".form-invalid-tooltip").remove();
     }
 
@@ -410,9 +418,9 @@
 
 //        $(element).removeData();
         $(element).data("errorMessage", errorMessage);
-        if (undefined === $(':input[name="' + element.name + '"]', element.form).data("iconUniqueId")) {
+        if (undefined === $(':input[name="' + element.name + '"]').first().data("iconUniqueId")) {
 //            $(element).data("iconUniqueId", uniqueId);
-            $(':input[name="' + element.name + '"]', element.form).data("iconUniqueId", uniqueId);
+            $(':input[name="' + element.name + '"]').first().data("iconUniqueId", uniqueId);
         }
         $(element).addClass("form-invalid-field");
     }
@@ -425,7 +433,12 @@
     function validateField(element) {
         var errorFlag = true;
 
-        var dataValidations = $.trim($(element).attr('data-validation')).split(' ');
+        if ('radio' === element.type || 'checkbox' === element.type) {
+            var dataValidations = $.trim($(":input[name=" + element.name + "]").first().attr('data-validation')).split(' ');
+        } else {
+            var dataValidations = $.trim($(element).attr('data-validation')).split(' ');
+        }
+
         dataValidations = parseValidations(dataValidations);
 
         if (!checkValidations(getValidationsArray(dataValidations))) {
